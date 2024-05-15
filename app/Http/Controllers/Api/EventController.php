@@ -6,17 +6,20 @@ use App\Http\Controllers\Controller;
 use App\Http\Resources\EventResource;
 use App\Http\Traits\CanLoadRelationships;
 use App\Models\Event;
-use App\Models\User;
 use Illuminate\Http\Request;
+use Illuminate\Foundation\Auth\Access\AuthorizesRequests;
 
 class EventController extends Controller
 {
-    use CanLoadRelationships;
+    use CanLoadRelationships, AuthorizesRequests;
     
     private  array $relations = ['user', 'attendees', 'attendees.user'];
     
-    public function index()
+    public function index(Request $request)
     {
+        // Authorize the viewAny action
+        $this->authorize('viewAny', [Event::class, $request->user()]);
+
         //$relations = ['user', 'attendees', 'attendees.user'];
 
         $query = $this->loadRelationships(Event::query());
@@ -29,6 +32,8 @@ class EventController extends Controller
      */
     public function store(Request $request)
     {
+        // Authorize the create action
+        $this->authorize('create', [Event::class, $request->user()]);
         
         $event = Event::create([
             ...$request->validate([
@@ -49,6 +54,9 @@ class EventController extends Controller
      */
     public function show(Event $event)
     {
+        // Authorize the view action
+        $this->authorize('view', $event);
+
         return new EventResource($this->loadRelationships($event));
     }
 
@@ -57,6 +65,8 @@ class EventController extends Controller
      */
     public function update(Request $request, Event $event)
     {
+        // Authorize the update action
+        $this->authorize('update', [$event, $request->user()]);
 
         $event->update(
             $request->validate([
@@ -74,15 +84,13 @@ class EventController extends Controller
     /**
      * Remove the specified resource from storage.
      */
-    public function destroy(Event $event)
+    public function destroy(Request $request, Event $event)
     {
+        // Authorize the delete action
+        $this->authorize('delete', [$event, $request->user()]);
+
         $event->delete();
 
-        return response()->json([
-            'message' => 'Event deleted successfully. '
-        ]);
-
-        //But the standard response is as follows:
-        // return response(status: 204);
+        return response(status: 204);
     }
 }
