@@ -16,10 +16,10 @@ Route::apiResource('events', EventController::class)->middleware('auth:sanctum')
 // Events Routes that don't require authentication
 Route::apiResource('events', EventController::class)->only(['index', 'show']);
 
-Route::apiResource('events.attendees', AttendeeController::class)->scoped()->middleware('auth:sanctum')->except(['index', 'show', 'update']);
+Route::apiResource('events.attendees', AttendeeController::class)->scoped()->middleware('auth:sanctum')->except(['index', 'show', 'update', 'destroy']);
 
-//Attendees list that requires authentication
-Route::apiResource('events.attendees', AttendeeController::class)->scoped()->only(['index', 'show']);
+//Attendees list that don't require authentication
+Route::apiResource('events.attendees', AttendeeController::class)->scoped()->only(['index', 'show', 'destroy']);
 
 Route::post('/login', [AuthController::class, 'login']);
 

@@ -45,7 +45,7 @@ class AttendeePolicy
      */
     public function delete(User $user, Attendee $attendee): bool
     {
-        return $user->id === $attendee->event->user_id || $user->id === $attendee->user_id;
+        return  $user->id === $attendee->user_id || $user->id === $attendee->event->user_id;
     }
 
     // /**

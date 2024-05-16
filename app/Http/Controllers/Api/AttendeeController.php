@@ -51,7 +51,7 @@ class AttendeeController extends Controller
     public function destroy(Request $request, Event $event, Attendee $attendee)
     {
         // Authorize the update action
-        $this->authorize('update', [$event, $request->user()]);
+        $this->authorize('delete', [$request->user(), $event, $attendee ]);
 
         $attendee->delete();
 
