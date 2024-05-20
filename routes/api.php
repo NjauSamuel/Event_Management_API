@@ -11,7 +11,7 @@ Route::get('/user', function (Request $request) {
 })->middleware('auth:sanctum');
 
 // Events Routes that require authentication
-Route::apiResource('events', EventController::class)->middleware('auth:sanctum')->except(['index', 'show']);
+Route::apiResource('events', EventController::class)->middleware('auth:sanctum')->except(['index', 'show'])->middleware('throttle:60,1');
 
 // Events Routes that don't require authentication
 Route::apiResource('events', EventController::class)->only(['index', 'show']);
